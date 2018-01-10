@@ -29,7 +29,7 @@ def identificazione():
 						infettato = "No"
 						fileopen = open(file, 'r') # Apri il file per leggerlo
 						for line in fileopen: # Analizzo le righe			
-							if viruskey in line: #Se non trovi la key del virus il file non e' infetto
+							if viruskey in line: #Se trovi la key del virus il file e' infetto
 								infettato = "Si"
 								print("[*] File gia' infettato > " + file)
 								break
