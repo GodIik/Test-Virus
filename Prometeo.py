@@ -7,7 +7,7 @@ banner = """
 +-----------------+----------------+
 | Prometeo Virus | Coded by Godlik |
 +----------------+-----------------+
-| Versione: 1.4  | Data: 11/1/2017  |
+| Versione: 1.4  | Data: 11/1/2017 |
 +----------------+-----------------+
 	  """
 myself = sys.argv[0]
@@ -81,5 +81,5 @@ if __name__ == '__main__':
 		os.chdir(directory)
 	except FileNotFoundError :
 		print("[!] Path non Trovata")
-		exit
+		exit()
 	identificazione(mypath)
